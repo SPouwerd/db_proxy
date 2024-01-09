@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  database:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+
+    ports:
+      - 8080:5432
+
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB_NAME}
+
+    volumes:
+      - OICT-proxy-database:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    
+    ports:
+      - 8081:80
+
+    environment:
+      - PGADMIN_DEFAULT_SERVER=[::]
+      - PGADMIN_DEFAULT_EMAIL=admin@oict.hu.nl
+      - PGADMIN_DEFAULT_PASSWORD=admin
+
+    volumes:
+      - OICT-proxy-pgadmin:/var/lib/pgadmin
+      
+    depends_on:
+      - database
+
+
+volumes:
+  OICT-proxy-database:
+  OICT-proxy-pgadmin:
